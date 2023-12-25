@@ -1,0 +1,14 @@
+package com.users.demo_users;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoUsersApplication {
+
+	public static void main(String[] args) {
+		EnvLoader.loadEnv();
+		SpringApplication.run(DemoUsersApplication.class, args);
+	}
+
+}
