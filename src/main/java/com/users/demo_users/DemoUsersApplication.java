@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoUsersApplication {
 
 	public static void main(String[] args) {
-		EnvLoader.loadEnv();
 		SpringApplication.run(DemoUsersApplication.class, args);
 	}
 
