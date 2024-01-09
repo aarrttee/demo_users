@@ -44,4 +44,15 @@ public class UserController {
             return userService.getAllUsers();
         }
     }
+
+    @PatchMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @Validated @RequestBody User user) {
+        return userService.updateUser(id, user);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
+    }
 }

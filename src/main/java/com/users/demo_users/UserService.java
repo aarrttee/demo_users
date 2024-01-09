@@ -38,4 +38,32 @@ public class UserService {
     public User addUser(@Validated @RequestBody User user) {
         return userRepository.save(user);
     }
+
+    public User updateUser(Long userId, User updatedUserData) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            if (updatedUserData.getFirstName() != null) {
+                existingUser.setFirstName(updatedUserData.getFirstName());
+            }
+            if (updatedUserData.getLastName() != null) {
+                existingUser.setLastName(updatedUserData.getLastName());
+            }
+
+            return userRepository.save(existingUser);
+        } else {
+            // Handle user not found scenario (throw an exception or return null, etc.)
+            throw new UserNotFoundException("User not found with ID: " + userId);
+        }
+    }
+
+    public void deleteUser(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            userRepository.deleteById(userId);
+        } else {
+            // Handle user not found scenario (throw an exception or return null, etc.)
+            throw new UserNotFoundException("User not found with ID: " + userId);
+        }
+    }
 }
