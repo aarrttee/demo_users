@@ -1,33 +1,47 @@
 package com.users.demo_users;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
-
-    @Autowired
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserService userService;
 
     @PostMapping
-    public User addUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public User addUser(@Validated @RequestBody User user) {
+        return userService.addUser(user);
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userService.getUserById(id);
+    }
+
+    private record ErrorResponse(String message) {
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException exception) {
+        return ResponseEntity.status(NOT_FOUND)
+                .body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @GetMapping
+    public Object getByFirstNameLastName(
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName
+    ) {
+        if (firstName != null && lastName != null) {
+            return userService.getByFirstNameAndLastName(firstName, lastName);
+        } else {
+            return userService.getAllUsers();
+        }
     }
 }
